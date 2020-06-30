@@ -28,4 +28,4 @@ jobs:
         inlineScript: |
               az login --identity
               az account set --subscription a4bf7b1d-dc1f-491a-9330-2c7092e7d20e
-              az deployment group create --resource-group myResourceGroup --template-file ./template.json --debug --parameters storageName=ostbyarmtutorialsa storageSKU=Standard_RAGRS
+              az deployment group create --resource-group myResourceGroup --template-file ./template.json --debug --parameters storageName=ostbyarmtutorialsa storageSKU=Standard_LRS
