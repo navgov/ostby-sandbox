@@ -4,9 +4,9 @@
   "resources": [
     {
       "type": "Microsoft.Storage/storageAccounts",
-      "apiVersion": "2019-04-01",
+      "apiVersion": "2019-06-01",
       "name": "ostby-arm-tutorial-sa",
-      "location": "eastus",
+      "location": "norwayeast",
       "sku": {
         "name": "Standard_LRS"
       },
