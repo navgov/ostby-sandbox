@@ -1,7 +1,8 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
-    "parameters": {
+    "parameters": 
+    {
     "webAppName": {
       "type": "string",
       "defaultValue" : "AzureLinuxApp",
@@ -43,7 +44,14 @@
     "location": {
       "type": "string",
       "defaultValue": "[resourceGroup().location]"
-    }    
+    },
+    "resourceTags": {
+        "type": "object",
+        "defaultValue": {
+            "Environment": "Utvikling",
+            "Project": "Tutorial"
+        }
+    }        
   },
     "variables": {
     "uniqueStorageName": "[concat(parameters('storagePrefix'), uniqueString(resourceGroup().id))]",
@@ -58,6 +66,7 @@
       "sku": {
          "name": "[parameters('storageSKU')]"
       },
+      "tags": "[parameters('resourceTags')]",      
       "kind": "StorageV2",
       "properties": {
         "supportsHttpsTrafficOnly": true
@@ -75,6 +84,7 @@
                 "family": "B",
                 "capacity": 1
             },
+            "tags": "[parameters('resourceTags')]",              
             "kind": "linux",
             "properties": {
                 "perSiteScaling": false,
@@ -93,6 +103,7 @@
                 "name": "[variables('webAppPortalName')]",
                 "location": "[parameters('location')]",
                 "kind": "app",
+                "tags": "[parameters('resourceTags')]",  
                 "dependsOn": [
                     "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]"
                 ],
