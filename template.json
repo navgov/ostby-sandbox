@@ -2,6 +2,10 @@
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
     "parameters": {
+     "appServicePlanName": {
+      "type": "string",
+      "defaultValue": "exampleplan"
+    },      
     "storagePrefix": {
       "type": "string",
       "minLength": 3,
@@ -42,7 +46,31 @@
       "properties": {
         "supportsHttpsTrafficOnly": true
       }
-    }
+    },
+            {
+            "type": "Microsoft.Web/serverfarms",
+            "apiVersion": "2018-02-01",
+            "name": "[parameters('appServicePlanName')]",
+            "location": "[parameters('location')]",
+            "sku": {
+                "name": "F1",
+                "tier": "Free",
+                "size": "F1",
+                "family": "F",
+                "capacity": 1
+            },
+            "kind": "linux",
+            "properties": {
+                "perSiteScaling": false,
+                "maximumElasticWorkerCount": 1,
+                "isSpot": false,
+                "reserved": true,
+                "isXenon": false,
+                "hyperV": false,
+                "targetWorkerCount": 0,
+                "targetWorkerSizeId": 0
+            }
+        }
   ],
     "outputs": {
     "storageEndpoint": {
