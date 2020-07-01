@@ -2,6 +2,21 @@
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
     "parameters": {
+    "webAppName": {
+      "type": "string",
+      "defaultValue" : "AzureLinuxApp",
+      "metadata": {
+        "description": "Base name of the resource such as web app name and app service plan "
+      },
+      "minLength": 2
+    },
+    "linuxFxVersion" : {
+        "type": "string",
+        "defaultValue" : "php|7.0",
+        "metadata": {
+          "description": "The Runtime stack of current web app"
+        }
+    },            
      "appServicePlanName": {
       "type": "string",
       "defaultValue": "exampleplan"
@@ -31,7 +46,8 @@
     }    
   },
     "variables": {
-    "uniqueStorageName": "[concat(parameters('storagePrefix'), uniqueString(resourceGroup().id))]"
+    "uniqueStorageName": "[concat(parameters('storagePrefix'), uniqueString(resourceGroup().id))]",
+    "webAppPortalName": "[concat(parameters('webAppName'), uniqueString(resourceGroup().id))]"
   },
   "resources": [
     {
@@ -70,7 +86,23 @@
                 "targetWorkerCount": 0,
                 "targetWorkerSizeId": 0
             }
-        }
+        },
+            {
+                "type": "Microsoft.Web/sites",
+                "apiVersion": "2018-11-01",
+                "name": "[variables('webAppPortalName')]",
+                "location": "[parameters('location')]",
+                "kind": "app",
+                "dependsOn": [
+                    "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]"
+                ],
+                "properties": {
+                    "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]",
+                    "siteConfig": {
+                        "linuxFxVersion": "[parameters('linuxFxVersion')]"
+                    }
+                }
+                }        
   ],
     "outputs": {
     "storageEndpoint": {
