@@ -28,4 +28,4 @@ jobs:
         inlineScript: |
               az login --identity
               az account set --subscription a4bf7b1d-dc1f-491a-9330-2c7092e7d20e
-              az deployment group create --resource-group myResourceGroupLink --template-file ./chaintemplate.json --debug --parameters projectName=link1 linkedTemplateUri='https://sentralrepo.blob.core.windows.net/templatestore/sa-armtemplate.json?sp=r&st=2020-07-02T11:36:53Z&se=2023-12-31T20:36:53Z&spr=https&sv=2019-10-10&sr=b&sig=7dZSSG8be5bJIqI2B53qpwmVbHfQM84WFfWlX5UnXqc%3D'
+              az deployment group create --resource-group myResourceGroupLink --template-file ./chaintemplate.json --debug --parameters projectName=link1 linkedTemplateUri='https://sentralrepo.blob.core.windows.net/templatestore/sa-armtemplate.json
