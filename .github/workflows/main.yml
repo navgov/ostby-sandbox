@@ -15,7 +15,7 @@ jobs:
   # This workflow contains a single job called "build"
   build:
     # The type of runner that the job will run on
-    runs-on: [self-hosted, linux, x64, self-hosted-utvikling-1]
+    runs-on: [self-hosted, self-hosted-utvikling-1]
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -28,4 +28,4 @@ jobs:
         inlineScript: |
               az login --identity
               az account set --subscription a4bf7b1d-dc1f-491a-9330-2c7092e7d20e
-              az deployment group create --resource-group myResourceGroupLink --template-file ./chaintemplate.json --debug --parameters projectName=link1 linkedTemplateUri='https://sentralrepo.blob.core.windows.net/templatestore/sa-armtemplate.json
+              az deployment group create --resource-group myResourceGroupLink --template-file ./chaintemplate.json --debug --parameters projectName=link1 linkedTemplateUri='https://sentralrepo.blob.core.windows.net/templatestore/sa-armtemplate.json'
