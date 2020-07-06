@@ -1,3 +1,4 @@
+#laster inn azure module
 import-module az.accounts
 connect-azaccount -identity
 Set-AzCurrentStorageAccount -ResourceGroupName GOV-Deployagent2 -Name sentralrepo       
