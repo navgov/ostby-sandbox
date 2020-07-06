@@ -22,10 +22,26 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it.
     - uses: actions/checkout@v2
     
+    #- name: Deploy ARM Template
+    #  uses: azure/CLI@v1
+      #with:
+        #inlineScript: |
+            #  az login --identity
+            #  az account set --subscription a4bf7b1d-dc1f-491a-9330-2c7092e7d20e
+            #  az deployment group create --resource-group myResourceGroupLink --template-file ./chaintemplate.json --debug --parameters projectName=link1 linkedTemplateUri='https://sentralrepo.blob.core.windows.net/templatestore/sa-armtemplate.json'
+    
     - name: Deploy ARM Template
-      uses: azure/CLI@v1
-      with:
-        inlineScript: |
-              az login --identity
-              az account set --subscription a4bf7b1d-dc1f-491a-9330-2c7092e7d20e
-              az deployment group create --resource-group myResourceGroupLink --template-file ./chaintemplate.json --debug --parameters projectName=link1 linkedTemplateUri='https://sentralrepo.blob.core.windows.net/templatestore/sa-armtemplate.json'
+      run:
+        |    
+        pwsh
+        connect-azaccount -identity
+        Set-AzCurrentStorageAccount -ResourceGroupName GOV-Deployagent2 -Name sentralrepo       
+        $token = New-AzStorageContainerSASToken -Name templatestore -Permission r -ExpiryTime (Get-Date).AddMinutes(30.0)
+        $url = (Get-AzStorageBlob -Container templatestore -Blob sa-armtemplate.json).ICloudBlob.uri.AbsoluteUri
+        $fulluri = $url +$token
+        $hash = @{}
+        $hash += @{'projectName' = 'link1'} 
+        $hash+=@{'linkedTemplateUri' = $fulluri}
+        Select-AzSubscription -subscriptionid a4bf7b1d-dc1f-491a-9330-2c7092e7d20e
+        New-AzResourceGroupDeployment -ResourceGroupName myResourceGroupLink -TemplateFile .\chaintemplate.json -templateParameterobject $hash
+
