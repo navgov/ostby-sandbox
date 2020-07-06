@@ -34,6 +34,7 @@ jobs:
       run:
         |    
         pwsh
+        import-module az.accounts
         connect-azaccount -identity
         Set-AzCurrentStorageAccount -ResourceGroupName GOV-Deployagent2 -Name sentralrepo       
         $token = New-AzStorageContainerSASToken -Name templatestore -Permission r -ExpiryTime (Get-Date).AddMinutes(30.0)
