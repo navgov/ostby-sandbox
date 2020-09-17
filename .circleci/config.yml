@@ -1,0 +1,76 @@
+# Use the latest 2.1 version of CircleCI pipeline processing engine, see https://circleci.com/docs/2.0/configuration-reference/
+version: 2.1
+
+working_directory: &working_directory
+  ~/project
+
+jobs:
+  plan:
+      docker:
+        - image: hashicorp/terraform:light
+      steps:
+        - checkout # henter all kode i github repo ned på disk
+        - add_ssh_keys:
+            fingerprints:
+              - 08:91:80:ae:3f:56:bc:79:d3:39:50:e7:20:42:08:a3
+        #- attach_workspace:
+        #    at: *working_directory # persistentstatekatalog
+        #    git clone --single-branch --branch ${TF_VAR_blueprint_version} git@github.com:navgov/${BLUEPRINT_REPO}.git
+        - run:
+            name: Avoid hosts unknown for github
+            command: echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config    
+        - run:
+            name: Terraform plan
+            command: |
+                echo $ARM_TENANT_ID
+                chmod +x set-blueprint.sh
+                source ./set-blueprint.sh
+                echo ${BLUEPRINT_REPO}
+                git clone git@github.com:navgov/${BLUEPRINT_REPO}.git
+                cp ./${BLUEPRINT_REPO}/* .
+                cat variables.tf
+                terraform version
+                terraform init \
+                  --backend-config="storage_account_name=${TF_VAR_tfstate_account}" \
+                  --backend-config="container_name=${TF_VAR_subscription_shortname}" \
+                  --backend-config="key=${TF_VAR_subscription_shortname}"
+                terraform plan -out=terraform.plan 
+        - persist_to_workspace:
+            root: *working_directory
+            paths:
+              - terraform.plan
+              - ./.terraform         
+  apply:
+      docker:
+        - image: hashicorp/terraform:light
+      steps:
+        - checkout # henter all kode i github repo ned på disk
+        - add_ssh_keys:
+            fingerprints:
+              - 08:91:80:ae:3f:56:bc:79:d3:39:50:e7:20:42:08:a3
+        - attach_workspace:
+            at: *working_directory # persistentstatekatalog
+        - run:
+            name: Avoid hosts unknown for github
+            command: echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config  
+        - run:
+            name: Terraform apply
+            command: |
+                echo $ARM_TENANT_ID
+                mv ~/project/.terraform .
+                #terraform init
+                #terraform apply -auto-approve ~/project/terraform.plan
+workflows:
+  main:
+    jobs:
+      - plan
+      - approve:
+          type: approval
+          requires:
+            - plan
+          filters:
+            branches:
+              only: master
+      - apply:
+          requires:
+            - approve
