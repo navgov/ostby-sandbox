@@ -23,18 +23,19 @@ jobs:
             name: Terraform plan
             command: |
                 echo $ARM_TENANT_ID
-                chmod +x set-blueprint.sh
-                source ./set-blueprint.sh
-                echo ${BLUEPRINT_REPO}
-                git clone git@github.com:navgov/${BLUEPRINT_REPO}.git
-                cp ./${BLUEPRINT_REPO}/* .
+                #chmod +x set-blueprint.sh
+                #source ./set-blueprint.sh
+                #echo ${BLUEPRINT_REPO}
+                git clone git@github.com:navgov/gov-azure-sub-blueprint.git
+                cp ./gov-azure-sub-blueprint/* .
+                ls -ltr ./
                 cat variables.tf
                 terraform version
                 terraform init \
                   --backend-config="storage_account_name=${TF_VAR_tfstate_account}" \
                   --backend-config="container_name=${TF_VAR_subscription_shortname}" \
                   --backend-config="key=${TF_VAR_subscription_shortname}"
-                terraform plan -out=terraform.plan 
+                #terraform plan -out=terraform.plan 
         - persist_to_workspace:
             root: *working_directory
             paths:
