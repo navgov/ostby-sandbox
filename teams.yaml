@@ -6,7 +6,7 @@ landingzones:
       - name: dev
         monthlyLimit: 1000
       - name: test
-        monthlyLimit: 1500
+        monthlyLimit: 1600
       - name: prod
         monthlyLimit: 2000
     contacts:
