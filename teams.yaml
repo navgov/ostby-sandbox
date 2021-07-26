@@ -1,0 +1,23 @@
+landingzones:
+
+  - team: teamexample
+    type: online
+    environments:
+      - name: dev
+        monthlyLimit: 1000
+      - name: test
+        monthlyLimit: 1500
+      - name: prod
+        monthlyLimit: 2000
+    contacts:
+      technical: daniel.brochs@utv.trygdeetaten.no
+      budget: daniel.brochs@nav.no
+
+  - team: teamexample2
+    type: online
+    environments:
+      - name: dev
+        monthlyLimit: 5000
+    contacts:
+      technical: Leif.Ljastad@utv.trygdeetaten.no
+      budget: Leif.Ljastad@nav.no
